@@ -1,10 +1,13 @@
 using Application_Chat.Context;
 using Application_Chat.Repository;
 using Application_Chat.Repository.Imp;
+using Application_Chat.Security;
 using Application_Chat.Service;
 using Application_Chat.Service.Imp;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +16,38 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+	c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApiChat", Version = "v1" });
+	var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+	c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+	//define security for authorization
+	c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+	{
+		Name = "Authorization",
+		Type = SecuritySchemeType.Http,
+		Scheme = "Bearer",
+		BearerFormat = "JWT",
+		In = ParameterLocation.Header,
+		Description = "JWT Authorization header using bearer scheme"
+	});
+	c.AddSecurityRequirement(new OpenApiSecurityRequirement
+				 {
+					{
+					   new OpenApiSecurityScheme
+					   {
+						  Reference = new OpenApiReference
+						  {
+						  Type = ReferenceType.SecurityScheme,
+							  Id = "Bearer"
+						  }
+					   },
+					   new string[]{}
+					}
+
+				 });
+});
 
 //Add services to the containes
 builder.Services.Configure<ChatStoreDatabaseSettings>(
@@ -27,6 +61,9 @@ builder.Services.AddSingleton(sp =>
 
 	return mongoDb;
 });
+
+//Configuration of server
+builder.Services.AddJwtServices(builder.Configuration);
 
 builder.Services.AddScoped<IUserRepository, ImpUserRepository>();
 builder.Services.AddScoped<IUser, ImpUser>();
