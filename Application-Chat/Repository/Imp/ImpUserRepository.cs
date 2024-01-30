@@ -34,9 +34,24 @@ namespace Application_Chat.Repository.Imp
 			return await _users.Find(_ => true).ToListAsync();
 		}
 
+		public async Task<User> GetUserByCredentials(User user)
+		{
+			return _users.Find(u => u.Email == user.Email & u.Password == user.Password).FirstOrDefault();
+		}
+
+		public async Task<User> GetUserByEmail(string email, string password)
+		{
+			return _users.Find(e => e.Email == email & e.Password == password).FirstOrDefault();
+		}
+
 		public async Task<User> GetUserById(string idUser)
 		{
 			return _users.Find(i => i.Id == idUser).FirstOrDefault();
+		}
+
+		public async Task<User> GetUserByUserName(string userName, string password)
+		{
+			return _users.Find(c => c.UserName == userName & c.Password == password).FirstOrDefault();
 		}
 
 		public async Task<string> UpdateUser(User user)

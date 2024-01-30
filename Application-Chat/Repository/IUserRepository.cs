@@ -9,5 +9,8 @@ namespace Application_Chat.Repository
 		Task<User> GetUserById(string idUser);
 		Task DeleteUser(string idUser);
 		Task<string> UpdateUser(User user);
+		Task<User> GetUserByEmail(string email, string password);
+		Task<User> GetUserByUserName(string userName, string password);
+		Task<User> GetUserByCredentials(User user);
 	}
 }
