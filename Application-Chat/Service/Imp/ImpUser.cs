@@ -1,6 +1,7 @@
 ﻿using Application_Chat.DTO;
 using Application_Chat.Models;
 using Application_Chat.Repository;
+using Application_Chat.Security;
 using Application_Chat.Tools;
 
 namespace Application_Chat.Service.Imp
@@ -8,10 +9,12 @@ namespace Application_Chat.Service.Imp
 	public class ImpUser : IUser
 	{
 		private IUserRepository _userRepository;
+		private JwtSettings _jwtSettings;
 
-		public ImpUser(IUserRepository userRepository)
+		public ImpUser(IUserRepository userRepository, JwtSettings jwtSettings)
 		{
 			_userRepository = userRepository;
+			_jwtSettings = jwtSettings;
 		}
 
 
@@ -44,6 +47,7 @@ namespace Application_Chat.Service.Imp
 			return false;
 		}
 
+
 		public async Task<List<User>> GetAllUsers()
 		{
 			return await _userRepository.GetAllUsers();
@@ -72,6 +76,33 @@ namespace Application_Chat.Service.Imp
 				string idUserUpdated = await _userRepository.UpdateUser(user);
 
 				return idUserUpdated;
+			}
+
+			return null;
+		}
+
+		public async Task<string> ValidateCredentials(Login login)
+		{
+			User userByEmail = await _userRepository.GetUserByEmail(login.User, Encrypt.GetSHA256(login.Password));
+			User userByUserName = await _userRepository.GetUserByUserName(login.User, Encrypt.GetSHA256(login.Password));
+
+			if (userByEmail != null | userByUserName != null)
+			{
+				string token;
+
+				User userFind = userByEmail == null ? userByUserName : userByEmail;
+
+				UserTokens userTokens = new UserTokens
+				{
+					Email = userFind.Email,
+					Id = userFind.Id,
+					UserName = userFind.UserName,
+					GuidId = Guid.NewGuid(),
+					Rol = string.Empty,
+				};
+				token = JwtHelppers.GenerateToken(userTokens, _jwtSettings);
+
+				return token;
 			}
 
 			return null;

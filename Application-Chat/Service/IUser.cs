@@ -10,5 +10,6 @@ namespace Application_Chat.Service
 		Task<bool> Delete(string idUser);
 		Task<User> GetUserById(string idUser);
 		Task<string> UpdateNameOfUser(string nameUserNew, string idUser);
+		Task<string> ValidateCredentials(Login login);
 	}
 }
