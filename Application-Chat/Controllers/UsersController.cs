@@ -142,5 +142,41 @@ namespace Application_Chat.Controllers
 			}
 			return Ok(response);
 		}
+
+
+		/// <summary>
+		/// Validar credenciales del login
+		/// </summary>
+		/// <returns>Token</returns>
+		/// <response code="200"> Exito </response>
+		/// <response code="500">Ha ocurrido un error en la creación.</response>
+		[HttpPost("Login")]
+		[ProducesResponseType((int)HttpStatusCode.OK)]
+		[ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> ValidateCredentials([FromBody] Login login)
+		{
+			ResponseBase response = new ResponseBase();
+			try
+			{
+				string token = await _user.ValidateCredentials(login);
+
+				if (token != null)
+				{
+					response.Success = true;
+					response.Message = "Credentials validated";
+					response.Data = token;
+				}
+				else
+				{
+					response.Success = false;
+					response.Message = "Credentials incorrect";
+				}
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError);
+			}
+			return Ok(response);
+		}
 	}
 }

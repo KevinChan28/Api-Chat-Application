@@ -13,6 +13,7 @@ namespace Application_Chat.Security
 			{
 				new Claim("Id",userAccounts.Id.ToString()),
 				new Claim(ClaimTypes.Name, userAccounts.UserName),
+				new Claim(ClaimTypes.Email, userAccounts.Email),
 				new Claim(ClaimTypes.Expiration, DateTime.Now.AddDays(1).ToString("G")),
 				new Claim(ClaimTypes.Role, userAccounts.Rol)
 			};
@@ -27,7 +28,7 @@ namespace Application_Chat.Security
 			return GetClaims(userAccounts, Id);
 		}
 
-		public static UserTokens GenerateToken(UserTokens modeL, JwtSettings jwtSettings)
+		public static string GenerateToken(UserTokens modeL, JwtSettings jwtSettings)
 		{
 			try
 			{
@@ -62,12 +63,8 @@ namespace Application_Chat.Security
 					)
 					);
 				userToken.Token = new JwtSecurityTokenHandler().WriteToken(jwToken);
-				userToken.UserName = modeL.UserName;
-				userToken.Id = modeL.Id;
-				userToken.GuidId = modeL.GuidId;
-				userToken.Rol = modeL.Rol;
 
-				return userToken;
+				return userToken.Token;
 			}
 			catch (Exception ex)
 			{
