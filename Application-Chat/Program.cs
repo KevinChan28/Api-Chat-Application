@@ -72,6 +72,17 @@ builder.Services.AddTransient<IMessageRepository, ImpMessageRepository>();
 builder.Services.AddTransient<IMessage, ImpMessage>();
 builder.Services.AddHttpContextAccessor();
 
+//CORS
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy(name: "Cors", builder =>
+	{
+		builder.AllowAnyOrigin();
+		builder.AllowAnyMethod();
+		builder.AllowAnyHeader();
+	});
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -81,7 +92,11 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
+app.UseCors("Cors");
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
