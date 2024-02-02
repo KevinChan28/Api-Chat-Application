@@ -67,6 +67,8 @@ builder.Services.AddJwtServices(builder.Configuration);
 
 builder.Services.AddScoped<IUserRepository, ImpUserRepository>();
 builder.Services.AddScoped<IUser, ImpUser>();
+builder.Services.AddScoped<IGroupRepository, ImpGroupRepository>();
+builder.Services.AddScoped<IGroup, ImpGroup>();
 
 var app = builder.Build();
 
