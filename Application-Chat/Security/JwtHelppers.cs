@@ -11,7 +11,7 @@ namespace Application_Chat.Security
 		{
 			List<Claim> claims = new List<Claim>
 			{
-				new Claim("Id",userAccounts.Id.ToString()),
+				new Claim(ClaimTypes.NameIdentifier,userAccounts.Id.ToString()),
 				new Claim(ClaimTypes.Name, userAccounts.UserName),
 				new Claim(ClaimTypes.Email, userAccounts.Email),
 				new Claim(ClaimTypes.Expiration, DateTime.Now.AddDays(1).ToString("G")),
