@@ -65,8 +65,12 @@ builder.Services.AddSingleton(sp =>
 //Configuration of server
 builder.Services.AddJwtServices(builder.Configuration);
 
-builder.Services.AddScoped<IUserRepository, ImpUserRepository>();
-builder.Services.AddScoped<IUser, ImpUser>();
+builder.Services.AddTransient<IUserRepository, ImpUserRepository>();
+builder.Services.AddTransient<IUser, ImpUser>();
+builder.Services.AddTransient<IAuthorization, ImpAuthorization>();
+builder.Services.AddTransient<IMessageRepository, ImpMessageRepository>();
+builder.Services.AddTransient<IMessage, ImpMessage>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
