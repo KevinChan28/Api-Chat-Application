@@ -65,8 +65,25 @@ builder.Services.AddSingleton(sp =>
 //Configuration of server
 builder.Services.AddJwtServices(builder.Configuration);
 
-builder.Services.AddScoped<IUserRepository, ImpUserRepository>();
-builder.Services.AddScoped<IUser, ImpUser>();
+builder.Services.AddTransient<IUserRepository, ImpUserRepository>();
+builder.Services.AddTransient<IUser, ImpUser>();
+builder.Services.AddTransient<IAuthorization, ImpAuthorization>();
+builder.Services.AddTransient<IMessageRepository, ImpMessageRepository>();
+builder.Services.AddTransient<IMessage, ImpMessage>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IGroupRepository, ImpGroupRepository>();
+builder.Services.AddScoped<IGroup, ImpGroup>();
+
+//CORS
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy(name: "Cors", builder =>
+	{
+		builder.AllowAnyOrigin();
+		builder.AllowAnyMethod();
+		builder.AllowAnyHeader();
+	});
+});
 
 var app = builder.Build();
 
@@ -77,7 +94,11 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
+app.UseCors("Cors");
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

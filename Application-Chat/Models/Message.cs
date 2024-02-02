@@ -6,10 +6,14 @@ namespace Application_Chat.Models
 	{
 		[BsonId]
 		[BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
-		public int Id { get; set; }
+		public string Id { get; set; }
+		[BsonElement("Content")]
 		public string Content { get; set; } = null!;
-		public DateTime SendDate { get; set; }
+		[BsonElement("SentDate")]
+		public DateTime SentDate { get; set; }
+		[BsonElement("UserId")]
 		public string UserId { get; set; } = null!;
+		[BsonElement("IssueId")]
 		public string IssueId { get; set; } = null!;
 	}
 }
