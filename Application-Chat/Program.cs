@@ -71,6 +71,8 @@ builder.Services.AddTransient<IAuthorization, ImpAuthorization>();
 builder.Services.AddTransient<IMessageRepository, ImpMessageRepository>();
 builder.Services.AddTransient<IMessage, ImpMessage>();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IGroupRepository, ImpGroupRepository>();
+builder.Services.AddScoped<IGroup, ImpGroup>();
 
 //CORS
 builder.Services.AddCors(options =>
