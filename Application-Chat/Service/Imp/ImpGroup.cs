@@ -1,4 +1,5 @@
 ﻿using Application_Chat.DTO;
+using Application_Chat.Enums;
 using Application_Chat.Models;
 using Application_Chat.Repository;
 
@@ -63,22 +64,60 @@ namespace Application_Chat.Service.Imp
 			return null;
 		}
 
-		public async Task<string> UpdateGroup(ChangeGroup model)
-		{
-			Group group = await _groupRepository.GetGroupById(model.id);
+        public async Task<string> UpdateDescriptionOfGroup(string desGroupNew, string idGroup)
+        {
+            Group group = await _groupRepository.GetGroupById(idGroup);
+            if (group != null)
+            {
+                group.Description = desGroupNew;
+                string idUpdateGroup = await _groupRepository.UpdateGroup(group);
 
-			if (group != null)
+                return idUpdateGroup;
+            }
+
+            return null;
+        }
+
+        public async Task<string> UpdateImagenOfGroup(string imageGroupNew, string idGroup)
+        {
+            Group group = await _groupRepository.GetGroupById(idGroup);
+            if (group != null)
+            {
+                group.Image = imageGroupNew;
+                string idUpdateGroup = await _groupRepository.UpdateGroup(group);
+
+                return idUpdateGroup;
+            }
+
+            return null;
+        }
+
+        public async Task<string> UpdateNameOfGroup(string nameGroupNew, string idGroup)
+        {
+			Group group = await _groupRepository.GetGroupById(idGroup);
+			if(group != null)
 			{
-				group.Image = model.Image;
-				group.Name = model.Name;
-				group.Description = model.Description;
-				string id = await _groupRepository.UpdateGroup(group);
+				group.Name = nameGroupNew;
+				string idUpdateGroup = await _groupRepository.UpdateGroup(group);
 
-				return id;
+				return idUpdateGroup;
 			}
 
 			return null;
-		}
+        }
 
-	}
+        public async Task<string> UpdateVisibilityOfGroup(VisibilityType VisGroupNew, string idGroup)
+        {
+            Group group = await _groupRepository.GetGroupById(idGroup);
+            if (group != null)
+            {
+                group.Visibility = VisGroupNew;
+                string idUpdateGroup = await _groupRepository.UpdateGroup(group);
+
+                return idUpdateGroup;
+            }
+
+            return null;
+        }
+    }
 }

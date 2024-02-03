@@ -107,15 +107,15 @@ namespace Application_Chat.Controllers
 
 
 		/// <summary>
-		/// actualizar un grupo
+		/// actualizar nombre de un grupo
 		/// </summary>
 		/// <returns>id del grupo que se actualizó</returns>
 		/// <response code="200"> Exito </response>
 		/// <response code="500">Ha ocurrido un error en la acción.</response>
-		[HttpPatch]
+		[HttpPatch("ChangeName")]
 		[ProducesResponseType((int)HttpStatusCode.OK)]
 		[ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-		public async Task<IActionResult> UpdateGroup([FromBody] ChangeGroup model)
+		public async Task<IActionResult> ChangeNameGroup([FromBody] ChangeGroup model)
 		{
 			ResponseBase response = new ResponseBase();
 			try
@@ -125,13 +125,13 @@ namespace Application_Chat.Controllers
 					return BadRequest();
 				}
 
-				string idGroupUpdated = await _group.UpdateGroup(model);
+				string idGroupUpdated = await _group.UpdateNameOfGroup(model.Name, model.id);
 
 				if (idGroupUpdated != null)
 				{
 					response.Success = true;
 					response.Data = idGroupUpdated;
-					response.Message = "Grupo actualizado";
+					response.Message = "Nombre de grupo actualizado";
 				}
 				else
 				{
@@ -145,5 +145,125 @@ namespace Application_Chat.Controllers
 			}
 			return Ok(response);
 		}
-	}
+
+        /// <summary>
+        /// actualizar descripción de un grupo
+        /// </summary>
+        /// <returns>id del grupo que se actualizó</returns>
+        /// <response code="200"> Exito </response>
+        /// <response code="500">Ha ocurrido un error en la acción.</response>
+        [HttpPatch("ChangeDescription")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> ChangeDescriptionGroup([FromBody] ChangeGroup model)
+        {
+            ResponseBase response = new ResponseBase();
+            try
+            {
+                if (model.id == null | model.Description ==null)
+                {
+                    return BadRequest();
+                }
+
+                string idGroupUpdated = await _group.UpdateDescriptionOfGroup(model.Description, model.id);
+
+                if (idGroupUpdated != null)
+                {
+                    response.Success = true;
+                    response.Data = idGroupUpdated;
+                    response.Message = "Descripción de grupo actualizado";
+                }
+                else
+                {
+                    return NotFound();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// actualizar imagen de un grupo
+        /// </summary>
+        /// <returns>id del grupo que se actualizó</returns>
+        /// <response code="200"> Exito </response>
+        /// <response code="500">Ha ocurrido un error en la acción.</response>
+        [HttpPatch("ChangeImage")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> ChangeImageGroup([FromBody] ChangeGroup model)
+        {
+            ResponseBase response = new ResponseBase();
+            try
+            {
+                if (model.id == null | model.Image == null)
+                {
+                    return BadRequest();
+                }
+
+                string idGroupUpdated = await _group.UpdateImagenOfGroup(model.Image, model.id);
+
+                if (idGroupUpdated != null)
+                {
+                    response.Success = true;
+                    response.Data = idGroupUpdated;
+                    response.Message = "Imagen de grupo actualizado";
+                }
+                else
+                {
+                    return NotFound();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// actualizar visibilidad de un grupo
+        /// </summary>
+        /// <returns>id del grupo que se actualizó</returns>
+        /// <response code="200"> Exito </response>
+        /// <response code="500">Ha ocurrido un error en la acción.</response>
+        [HttpPatch("ChangeVisibility")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> ChangeVisibilityGroup([FromBody] ChangeGroup model)
+        {
+            ResponseBase response = new ResponseBase();
+            try
+            {
+                if (model.id == null | model.Visibility == null)
+                {
+                    return BadRequest();
+                }
+
+                string idGroupUpdated = await _group.UpdateVisibilityOfGroup(model.Visibility, model.id);
+
+                if (idGroupUpdated != null)
+                {
+                    response.Success = true;
+                    response.Data = idGroupUpdated;
+                    response.Message = "Visibilidad de grupo actualizado";
+                }
+                else
+                {
+                    return NotFound();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return Ok(response);
+        }
+    }
 }
