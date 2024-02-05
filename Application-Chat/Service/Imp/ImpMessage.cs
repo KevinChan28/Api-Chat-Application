@@ -1,4 +1,5 @@
 ﻿using Application_Chat.DTO;
+using Application_Chat.Hubs;
 using Application_Chat.Models;
 using Application_Chat.Repository;
 
@@ -8,15 +9,19 @@ namespace Application_Chat.Service.Imp
 	{
 		private IMessageRepository _messageRepository;
 		private IAuthorization _authorization;
+		private readonly ChatHub _chatHub;
+		private readonly IUserRepository _userRepository;
 
-		public ImpMessage(IMessageRepository messageRepository, IAuthorization authorization)
+		public ImpMessage(IMessageRepository messageRepository, IAuthorization authorization, ChatHub chatHub, IUserRepository userRepository)
 		{
 			_messageRepository = messageRepository;
 			_authorization = authorization;
+			_chatHub = chatHub;
+			_userRepository = userRepository;
 		}
 
 
-		public async Task<string> CreateMessage(SendMessage message)
+		public async Task<string> CreateMessage(CreateMessage message)
 		{
 			Message messageNew = new Message
 			{
@@ -27,6 +32,15 @@ namespace Application_Chat.Service.Imp
 			};
 
 			await _messageRepository.Create(messageNew);
+
+			SendMessageDTO sendMessage = new SendMessageDTO
+			{
+				IdUser = messageNew.UserId,
+				idIssue = message.IssueId,
+				Message = message.Text
+			};
+
+			await SendMessage(sendMessage);
 
 			return messageNew.Id;
 		}
@@ -64,6 +78,11 @@ namespace Application_Chat.Service.Imp
 			}
 
 			return null;
+		}
+
+		public async Task SendMessage(SendMessageDTO sendMessage)
+		{
+			await _chatHub.SendMessage(sendMessage.IdUser, sendMessage.Message, sendMessage.idIssue);
 		}
 	}
 }
