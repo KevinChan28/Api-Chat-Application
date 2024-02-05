@@ -1,4 +1,5 @@
 using Application_Chat.Context;
+using Application_Chat.Hubs;
 using Application_Chat.Repository;
 using Application_Chat.Repository.Imp;
 using Application_Chat.Security;
@@ -64,6 +65,8 @@ builder.Services.AddSingleton(sp =>
 
 //Configuration of server
 builder.Services.AddJwtServices(builder.Configuration);
+//Add SignalR to send messages
+builder.Services.AddSignalR();
 
 builder.Services.AddTransient<IUserRepository, ImpUserRepository>();
 builder.Services.AddTransient<IUser, ImpUser>();
@@ -71,17 +74,20 @@ builder.Services.AddTransient<IAuthorization, ImpAuthorization>();
 builder.Services.AddTransient<IMessageRepository, ImpMessageRepository>();
 builder.Services.AddTransient<IMessage, ImpMessage>();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IGroupRepository, ImpGroupRepository>();
-builder.Services.AddScoped<IGroup, ImpGroup>();
+builder.Services.AddTransient<IGroupRepository, ImpGroupRepository>();
+builder.Services.AddTransient<IGroup, ImpGroup>();
+builder.Services.AddTransient<ChatHub>();
+
 
 //CORS
 builder.Services.AddCors(options =>
 {
 	options.AddPolicy(name: "Cors", builder =>
 	{
-		builder.AllowAnyOrigin();
+		builder.WithOrigins("http://localhost:4200", "http://192.168.1.74:8080");
 		builder.AllowAnyMethod();
 		builder.AllowAnyHeader();
+		builder.AllowCredentials();
 	});
 });
 
@@ -101,6 +107,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.MapHub<ChatHub>("/chat");
 
 app.MapControllers();
 

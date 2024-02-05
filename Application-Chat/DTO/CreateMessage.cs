@@ -1,6 +1,6 @@
 ﻿namespace Application_Chat.DTO
 {
-	public record SendMessage(
+	public record CreateMessage(
 		string Text,
 		DateTime SendDate,
 		string IssueId
