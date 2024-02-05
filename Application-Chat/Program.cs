@@ -84,7 +84,7 @@ builder.Services.AddCors(options =>
 {
 	options.AddPolicy(name: "Cors", builder =>
 	{
-		builder.WithOrigins("http://localhost:4200", "http://192.168.1.74:8080");
+		builder.WithOrigins("http://localhost:4200", "http://187.155.91.226", "https://deploy-preview-1--uachat.netlify.app/#/");
 		builder.AllowAnyMethod();
 		builder.AllowAnyHeader();
 		builder.AllowCredentials();
