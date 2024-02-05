@@ -29,12 +29,14 @@ namespace Application_Chat.Controllers
 		[HttpPost]
 		[ProducesResponseType((int)HttpStatusCode.OK)]
 		[ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-		public async Task<IActionResult> RegisterUser([FromBody] SendMessage message)
+		public async Task<IActionResult> RegisterUser([FromBody] CreateMessage message)
 		{
 			ResponseBase response = new ResponseBase();
+
 			try
 			{
 				string idMessage = await _message.CreateMessage(message);
+
 				if (idMessage != null)
 				{
 					response.Success = true;
