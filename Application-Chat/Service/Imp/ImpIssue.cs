@@ -8,11 +8,15 @@ namespace Application_Chat.Service.Imp
 	{
 		private readonly IIssueRepository _issueRepository;
 		private readonly IUserRepository _userRepository;
+		private readonly IGroupRepository _groupRepository;
+		private readonly IAuthorization _authorization;
 
-		public ImpIssue(IIssueRepository issueRepository, IUserRepository user)
+		public ImpIssue(IIssueRepository issueRepository, IUserRepository user, IGroupRepository groupRepository, IAuthorization authorization)
 		{
 			_issueRepository = issueRepository;
 			_userRepository = user;
+			_groupRepository = groupRepository;
+			_authorization = authorization;
 		}
 
 
@@ -36,6 +40,22 @@ namespace Application_Chat.Service.Imp
 			}
 
 			return null;
+		}
+
+		public async Task<List<ListGroups>> GetGroupsBelongUserCurrent()
+		{
+			string idUser = _authorization.UserCurrent();
+			List<Issue> issuesOfUser = await _issueRepository.GetIssuesOfUser(idUser);
+			List<Group> groups = await _groupRepository.GetAllGroups();
+			List<ListGroups> listGroups = issuesOfUser.Select(x => new ListGroups
+			{
+				idIssue = x.Id,
+				NameGroup = groups.Where(c => c.Id == x.GroupId).Select(a => a.Name).FirstOrDefault(),
+				Image = groups.Where(z => z.Id == x.GroupId).Select(n => n.Image).FirstOrDefault()
+
+			}).ToList();
+
+			return listGroups;
 		}
 	}
 }
