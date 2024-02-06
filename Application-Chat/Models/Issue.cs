@@ -7,7 +7,7 @@ namespace Application_Chat.Models
 	{
 		[BsonId]
 		[BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
-		public int Id { get; set; }
+		public string Id { get; set; }
 		public string UserId { get; set; } = null!;
 		public string GroupId { get; set; } = null!;
 		public Roles Rol { get; set; }

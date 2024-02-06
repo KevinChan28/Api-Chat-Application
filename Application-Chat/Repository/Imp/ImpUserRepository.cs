@@ -39,7 +39,12 @@ namespace Application_Chat.Repository.Imp
 			return _users.Find(u => u.Email == user.Email & u.Password == user.Password).FirstOrDefault();
 		}
 
-		public async Task<User> GetUserByEmail(string email, string password)
+		public async Task<User> GetUserByEmail(string email)
+		{
+			return _users.Find(u => u.Email == email).FirstOrDefault();
+		}
+
+		public async Task<User> GetUserByEmailAndPwd(string email, string password)
 		{
 			return _users.Find(e => e.Email == email & e.Password == password).FirstOrDefault();
 		}

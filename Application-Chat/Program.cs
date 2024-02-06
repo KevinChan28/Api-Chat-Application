@@ -77,6 +77,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IGroupRepository, ImpGroupRepository>();
 builder.Services.AddTransient<IGroup, ImpGroup>();
 builder.Services.AddTransient<ChatHub>();
+builder.Services.AddTransient<IIssueRepository, ImpIssueRepository>();
+builder.Services.AddTransient<IIsue, ImpIssue>();
 
 
 //CORS
@@ -84,7 +86,7 @@ builder.Services.AddCors(options =>
 {
 	options.AddPolicy(name: "Cors", builder =>
 	{
-		builder.WithOrigins("http://localhost:4200", "http://187.155.91.226", "https://deploy-preview-1--uachat.netlify.app");
+		builder.WithOrigins("http://localhost:4200", "http://187.155.91.226:8080", "https://deploy-preview-1--uachat.netlify.app");
 		builder.AllowCredentials();
 		builder.AllowAnyMethod();
 		builder.AllowAnyHeader();

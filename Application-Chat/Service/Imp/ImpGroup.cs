@@ -8,11 +8,13 @@ namespace Application_Chat.Service.Imp
 	{
 		private IGroupRepository _groupRepository;
 		private IAuthorization _authorization;
+		private IIssueRepository _issue;
 
-		public ImpGroup(IGroupRepository groupRepository, IAuthorization authorization)
+		public ImpGroup(IGroupRepository groupRepository, IAuthorization authorization, IIssueRepository issue)
 		{
 			_groupRepository = groupRepository;
 			_authorization = authorization;
+			_issue = issue;
 		}
 
 		public async Task<string> Create(CreateGroup model)
@@ -28,6 +30,16 @@ namespace Application_Chat.Service.Imp
 			};
 
 			string idGroup = await _groupRepository.CreateGroup(group);
+
+			Issue issue = new Issue
+			{
+				GroupId = group.Id,
+				JoinedDate = model.CreatedDate,
+				Rol = Enums.Roles.Administrator,
+				UserId = _authorization.UserCurrent(),
+			};
+
+			await _issue.CreateIssue(issue);
 
 			return idGroup;
 		}

@@ -83,7 +83,7 @@ namespace Application_Chat.Service.Imp
 
 		public async Task<string> ValidateCredentials(Login login)
 		{
-			User userByEmail = await _userRepository.GetUserByEmail(login.User, Encrypt.GetSHA256(login.Password));
+			User userByEmail = await _userRepository.GetUserByEmailAndPwd(login.User, Encrypt.GetSHA256(login.Password));
 			User userByUserName = await _userRepository.GetUserByUserName(login.User, Encrypt.GetSHA256(login.Password));
 
 			if (userByEmail != null | userByUserName != null)
