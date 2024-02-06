@@ -54,5 +54,32 @@ namespace Application_Chat.Controllers
 			}
 			return Ok(response);
 		}
+
+
+		/// <summary>
+		/// Obtener los grupos a los que pertenece un usuario
+		/// </summary>
+		/// <returns>Lista de grupos</returns>
+		/// <response code="200"> Exito </response>
+		/// <response code="500">Ha ocurrido un error en la consulta.</response>
+		[HttpGet]
+		[ProducesResponseType((int)HttpStatusCode.OK)]
+		[ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> GetGroupsOfUser()
+		{
+			ResponseBase response = new ResponseBase();
+			try
+			{
+				List<ListGroups> groups = await _issue.GetGroupsBelongUserCurrent();
+				response.Data = groups;
+				response.Success = true;
+				response.Message = "Search success";
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError);
+			}
+			return Ok(response);
+		}
 	}
 }

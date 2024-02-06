@@ -16,9 +16,23 @@ namespace Application_Chat.Repository.Imp
 			_issues = mongoDatabase.GetCollection<Issue>("Issue");
 		}
 
+
 		public async Task CreateIssue(Issue issue)
 		{
 			await _issues.InsertOneAsync(issue);
+		}
+
+		public async Task<List<Issue>> GetIssuesOfUser(string idUser)
+		{
+			try
+			{
+				return await _issues.Find(x => x.UserId == idUser).ToListAsync();
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
 		}
 	}
 }
