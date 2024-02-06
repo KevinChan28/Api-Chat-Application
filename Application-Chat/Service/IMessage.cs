@@ -10,5 +10,6 @@ namespace Application_Chat.Service
 		Task<string> ChangeContentMessage(string newText, string idMessage);
 		Task<bool> DeleteMessage(string idMessage);
 		Task SendMessage(SendMessageDTO sendMessage);
+		Task<List<ListMessagesInfo>> GetMessagesOfGroup(string idIssue);
 	}
 }

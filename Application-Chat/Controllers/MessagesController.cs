@@ -152,5 +152,31 @@ namespace Application_Chat.Controllers
 			}
 			return Ok(response);
 		}
+
+		/// <summary>
+		/// Obtener todos los mensajes de un grupo 
+		/// </summary>
+		/// <returns>Lista de mensajes</returns>
+		/// <response code="200"> Exito </response>
+		/// <response code="500">Ha ocurrido un error en la consulta.</response>
+		[HttpGet("group/{idIssue}")]
+		[ProducesResponseType((int)HttpStatusCode.OK)]
+		[ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> GetMessageOfGroup([FromRoute] string idIssue)
+		{
+			ResponseBase response = new ResponseBase();
+			try
+			{
+				List<ListMessagesInfo> messages = await _message.GetMessagesOfGroup(idIssue);
+				response.Message = "Search success";
+				response.Data = messages;
+				response.Success = true;
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError);
+			}
+			return Ok(response);
+		}
 	}
 }

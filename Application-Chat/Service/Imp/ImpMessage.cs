@@ -33,15 +33,6 @@ namespace Application_Chat.Service.Imp
 
 			await _messageRepository.Create(messageNew);
 
-			SendMessageDTO sendMessage = new SendMessageDTO
-			{
-				IdUser = messageNew.UserId,
-				idIssue = message.IssueId,
-				Message = message.Text
-			};
-
-			await SendMessage(sendMessage);
-
 			return messageNew.Id;
 		}
 
@@ -83,6 +74,33 @@ namespace Application_Chat.Service.Imp
 		public async Task SendMessage(SendMessageDTO sendMessage)
 		{
 			await _chatHub.SendMessage(sendMessage.IdUser, sendMessage.Message, sendMessage.idIssue);
+		}
+
+		public async Task<List<ListMessagesInfo>> GetMessagesOfGroup(string idIssue)
+		{
+			List<Message> messages = await _messageRepository.GetAllMessages();
+			List<Message> messagesOfGroup = messages.Where(z => z.IssueId == idIssue).ToList();
+			List<User> users = await _userRepository.GetAllUsers();
+
+			var groupedMessages = messagesOfGroup
+									.GroupBy(msg => msg.SentDate.Date)
+									.OrderBy(group => group.Key)
+									.ToList();
+
+			List<ListMessagesInfo> messageInfo = groupedMessages.Select(group =>
+			   new ListMessagesInfo
+			   {
+				   Date = group.Key,
+				   Messages = group.Select(x => new InfoMessage
+				   {
+					   SendDate = x.SentDate.ToString("t"),
+					   Content = x.Content,
+					   IdMessage = x.Id,
+					   NameUser = users.FirstOrDefault(z => z.Id == x.UserId)?.UserName
+				   }).ToList()
+			   }).ToList();
+
+			return messageInfo;
 		}
 	}
 }
