@@ -1,6 +1,7 @@
 ﻿using Application_Chat.DTO;
 using Application_Chat.Models;
 using Application_Chat.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -26,6 +27,7 @@ namespace Application_Chat.Controllers
 		[HttpPost]
 		[ProducesResponseType((int)HttpStatusCode.OK)]
 		[ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+		[Authorize]
 		public async Task<IActionResult> Create([FromBody] CreateGroup groupNew)
 		{
 			ResponseBase response = new ResponseBase();
