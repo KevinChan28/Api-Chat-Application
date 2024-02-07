@@ -1,12 +1,14 @@
 ﻿using Application_Chat.DTO;
 using Application_Chat.Models;
 using Application_Chat.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Application_Chat.Controllers
 {
+	[Authorize]
 	[EnableCors("Cors")]
 	[Route("api/[controller]")]
 	[ApiController]

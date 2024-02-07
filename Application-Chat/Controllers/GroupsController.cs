@@ -7,6 +7,7 @@ using System.Net;
 
 namespace Application_Chat.Controllers
 {
+	[Authorize]
 	[Route("api/[controller]")]
 	[ApiController]
 	public class GroupsController : ControllerBase

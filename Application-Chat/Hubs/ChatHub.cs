@@ -21,7 +21,12 @@ namespace Application_Chat.Hubs
 		public async Task AddToGroup(string group)
 		{
 			await Groups.AddToGroupAsync(Context.ConnectionId, group);
-			await Clients.Group(group).SendAsync("ShowWho", $"Alguien se conectó {Context.ConnectionId}");
+			//await Clients.Group(group).SendAsync("ShowWho", $"Alguien se conectó {Context.ConnectionId}");
+		}
+
+		public async Task NotifyUserConected(string idIssue, string userName)
+		{
+			await Clients.Group(idIssue).SendAsync("ShowWho", userName);
 		}
 	}
 }
