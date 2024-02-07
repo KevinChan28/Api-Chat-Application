@@ -6,5 +6,6 @@ namespace Application_Chat.Service
 	{
 		Task<string> AddUserToGroup(AddUserToGroup model);
 		Task<List<ListGroups>> GetGroupsBelongUserCurrent();
-	}
+        Task<string> AddUserToGroupId(AddUserToGroupId model);
+    }
 }
