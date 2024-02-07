@@ -42,7 +42,29 @@ namespace Application_Chat.Service.Imp
 			return null;
 		}
 
-		public async Task<List<ListGroups>> GetGroupsBelongUserCurrent()
+        public async Task<string> AddUserToGroupId(AddUserToGroupId model)
+        {
+			Group groupFind = await _groupRepository.GetGroupById(model.idGroup);
+
+            if (groupFind != null)
+            {
+                Issue issue = new Issue
+                {
+                    UserId = _authorization.UserCurrent(),
+                    GroupId = model.idGroup,
+                    JoinedDate = model.JoinedDate,
+                    Rol = (Enums.Roles)3
+                };
+
+                await _issueRepository.CreateIssue(issue);
+
+                return issue.Id;
+            }
+
+            return null;
+        }
+
+        public async Task<List<ListGroups>> GetGroupsBelongUserCurrent()
 		{
 			string idUser = _authorization.UserCurrent();
 			List<Issue> issuesOfUser = await _issueRepository.GetIssuesOfUser(idUser);
