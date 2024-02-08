@@ -27,7 +27,7 @@ namespace Application_Chat.Service.Imp
 			{
 				Content = message.Text,
 				SentDate = message.SendDate,
-				IssueId = message.IssueId,
+				GroupId = message.GroupId,
 				UserId = _authorization.UserCurrent()
 			};
 
@@ -76,10 +76,10 @@ namespace Application_Chat.Service.Imp
 			await _chatHub.SendMessage(sendMessage.IdUser, sendMessage.Message, sendMessage.idIssue);
 		}
 
-		public async Task<List<ListMessagesInfo>> GetMessagesOfGroup(string idIssue)
+		public async Task<List<ListMessagesInfo>> GetMessagesOfGroup(string idGroup)
 		{
 			List<Message> messages = await _messageRepository.GetAllMessages();
-			List<Message> messagesOfGroup = messages.Where(z => z.IssueId == idIssue).ToList();
+			List<Message> messagesOfGroup = messages.Where(z => z.GroupId == idGroup).ToList();
 			List<User> users = await _userRepository.GetAllUsers();
 
 			var groupedMessages = messagesOfGroup

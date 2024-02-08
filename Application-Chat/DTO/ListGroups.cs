@@ -5,5 +5,6 @@
 		public string idIssue { get; set; }
 		public string NameGroup { get; set; }
 		public string Image { get; set; }
+		public string idGroup { get; set; }
 	}
 }

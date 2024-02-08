@@ -13,7 +13,7 @@ namespace Application_Chat.Models
 		public DateTime SentDate { get; set; }
 		[BsonElement("UserId")]
 		public string UserId { get; set; } = null!;
-		[BsonElement("IssueId")]
-		public string IssueId { get; set; } = null!;
+		[BsonElement("GroupId")]
+		public string GroupId { get; set; } = null!;
 	}
 }

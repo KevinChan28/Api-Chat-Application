@@ -3,7 +3,7 @@
 	public record CreateMessage(
 		string Text,
 		DateTime SendDate,
-		string IssueId
+		string GroupId
 		);
 
 }

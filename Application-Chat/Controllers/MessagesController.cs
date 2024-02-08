@@ -161,15 +161,15 @@ namespace Application_Chat.Controllers
 		/// <returns>Lista de mensajes</returns>
 		/// <response code="200"> Exito </response>
 		/// <response code="500">Ha ocurrido un error en la consulta.</response>
-		[HttpGet("group/{idIssue}")]
+		[HttpGet("group/{idGroup}")]
 		[ProducesResponseType((int)HttpStatusCode.OK)]
 		[ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-		public async Task<IActionResult> GetMessageOfGroup([FromRoute] string idIssue)
+		public async Task<IActionResult> GetMessageOfGroup([FromRoute] string idGroup)
 		{
 			ResponseBase response = new ResponseBase();
 			try
 			{
-				List<ListMessagesInfo> messages = await _message.GetMessagesOfGroup(idIssue);
+				List<ListMessagesInfo> messages = await _message.GetMessagesOfGroup(idGroup);
 				response.Message = "Search success";
 				response.Data = messages;
 				response.Success = true;
