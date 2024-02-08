@@ -8,7 +8,6 @@ using System.Net;
 
 namespace Application_Chat.Controllers
 {
-	[Authorize]
 	[EnableCors("Cors")]
 	[Route("api/[controller]")]
 	[ApiController]
