@@ -42,29 +42,29 @@ namespace Application_Chat.Service.Imp
 			return null;
 		}
 
-        public async Task<string> AddUserToGroupId(AddUserToGroupId model)
-        {
+		public async Task<string> AddUserToGroupId(AddUserToGroupId model)
+		{
 			Group groupFind = await _groupRepository.GetGroupById(model.idGroup);
 
-            if (groupFind != null)
-            {
-                Issue issue = new Issue
-                {
-                    UserId = _authorization.UserCurrent(),
-                    GroupId = model.idGroup,
-                    JoinedDate = model.JoinedDate,
-                    Rol = (Enums.Roles)3
-                };
+			if (groupFind != null)
+			{
+				Issue issue = new Issue
+				{
+					UserId = _authorization.UserCurrent(),
+					GroupId = model.idGroup,
+					JoinedDate = model.JoinedDate,
+					Rol = (Enums.Roles)3
+				};
 
-                await _issueRepository.CreateIssue(issue);
+				await _issueRepository.CreateIssue(issue);
 
-                return issue.Id;
-            }
+				return issue.Id;
+			}
 
-            return null;
-        }
+			return null;
+		}
 
-        public async Task<List<ListGroups>> GetGroupsBelongUserCurrent()
+		public async Task<List<ListGroups>> GetGroupsBelongUserCurrent()
 		{
 			string idUser = _authorization.UserCurrent();
 			List<Issue> issuesOfUser = await _issueRepository.GetIssuesOfUser(idUser);
@@ -73,7 +73,8 @@ namespace Application_Chat.Service.Imp
 			{
 				idIssue = x.Id,
 				NameGroup = groups.Where(c => c.Id == x.GroupId).Select(a => a.Name).FirstOrDefault(),
-				Image = groups.Where(z => z.Id == x.GroupId).Select(n => n.Image).FirstOrDefault()
+				Image = groups.Where(z => z.Id == x.GroupId).Select(n => n.Image).FirstOrDefault(),
+				idGroup = x.GroupId
 
 			}).ToList();
 
