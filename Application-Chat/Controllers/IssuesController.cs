@@ -47,7 +47,7 @@ namespace Application_Chat.Controllers
 				else
 				{
 					response.Success = false;
-					return BadRequest("User not found");
+					return BadRequest("User not found or already exist in the group");
 				}
 			}
 			catch (Exception ex)
@@ -84,40 +84,40 @@ namespace Application_Chat.Controllers
 			return Ok(response);
 		}
 
-        /// <summary>
-        /// Agregar un usuario a un grupo por su id
-        /// </summary>
-        /// <returns>Id del asunto</returns>
-        /// <response code="200"> Exito </response>
-        /// <response code="500">Ha ocurrido un error en la creación.</response>
-        [HttpPost("groupId")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> AddUserToGroupId([FromBody] AddUserToGroupId model)
-        {
-            ResponseBase response = new ResponseBase();
+		/// <summary>
+		/// Agregar un usuario a un grupo por el id del grupo
+		/// </summary>
+		/// <returns>Id del asunto</returns>
+		/// <response code="200"> Exito </response>
+		/// <response code="500">Ha ocurrido un error en la creación.</response>
+		[HttpPost("groupId")]
+		[ProducesResponseType((int)HttpStatusCode.OK)]
+		[ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> AddUserToGroupId([FromBody] AddUserToGroupId model)
+		{
+			ResponseBase response = new ResponseBase();
 
-            try
-            {
-                string idIssue = await _issue.AddUserToGroupId(model);
+			try
+			{
+				string idIssue = await _issue.AddUserByGroupId(model);
 
-                if (idIssue != null)
-                {
-                    response.Success = true;
-                    response.Message = "User added";
-                    response.Data = new { IdIssue = idIssue };
-                }
-                else
-                {
-                    response.Success = false;
-                    return BadRequest("User not found");
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-            return Ok(response);
-        }
-    }
+				if (idIssue != null)
+				{
+					response.Success = true;
+					response.Message = "User added";
+					response.Data = new { IdIssue = idIssue };
+				}
+				else
+				{
+					response.Success = false;
+					return BadRequest("User not found or already exist in the group");
+				}
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError);
+			}
+			return Ok(response);
+		}
+	}
 }

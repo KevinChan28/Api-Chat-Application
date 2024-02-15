@@ -22,13 +22,13 @@ namespace Application_Chat.Service.Imp
 
 		public async Task<string> AddUserToGroup(AddUserToGroup model)
 		{
-			User userFind = await _userRepository.GetUserByEmail(model.email);
+			var (isValid, idUser) = await IsValidToAddGroup(model);
 
-			if (userFind != null)
+			if (isValid)
 			{
 				Issue issue = new Issue
 				{
-					UserId = userFind.Id,
+					UserId = idUser,
 					GroupId = model.idGroup,
 					JoinedDate = model.JoinedDate,
 					Rol = model.Rol
@@ -42,11 +42,13 @@ namespace Application_Chat.Service.Imp
 			return null;
 		}
 
-		public async Task<string> AddUserToGroupId(AddUserToGroupId model)
+		public async Task<string> AddUserByGroupId(AddUserToGroupId model)
 		{
+			string idUser = _authorization.UserCurrent();
 			Group groupFind = await _groupRepository.GetGroupById(model.idGroup);
+			bool userExistInGroup = await _issueRepository.ExistUserInGroup(idUser, model.idGroup);
 
-			if (groupFind != null)
+			if (groupFind != null && !userExistInGroup)
 			{
 				Issue issue = new Issue
 				{
@@ -79,6 +81,20 @@ namespace Application_Chat.Service.Imp
 			}).ToList();
 
 			return listGroups;
+		}
+
+		public async Task<(bool, string)> IsValidToAddGroup(AddUserToGroup model)
+		{
+			User userFind = await _userRepository.GetUserByEmail(model.email);
+			Group groupFind = await _groupRepository.GetGroupById(model.idGroup);
+			bool exist = await _issueRepository.ExistUserInGroup(userFind.Id, model.idGroup);
+
+			if (userFind != null && groupFind != null && !exist)
+			{
+				return (true, userFind.Id);
+			}
+
+			return (false, null);
 		}
 	}
 }
