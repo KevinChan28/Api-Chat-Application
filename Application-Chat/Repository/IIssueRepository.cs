@@ -6,5 +6,6 @@ namespace Application_Chat.Repository
 	{
 		Task CreateIssue(Issue issue);
 		Task<List<Issue>> GetIssuesOfUser(string idUser);
+		Task<bool> ExistUserInGroup(string idUser, string idGroup);
 	}
 }
