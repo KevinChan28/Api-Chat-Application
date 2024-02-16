@@ -6,4 +6,4 @@ Hecho con ASP.NET Core y la biblioteca signalR
 ## Frontend
 Hecho en Vue js 
 <br/>
-<a src='https://github.com/ricardoMogas/front-aplication-chat'> Repositorio Ricardo Moo </a>
+Repositorio Ricardo Moo: https://github.com/ricardoMogas/front-aplication-chat
