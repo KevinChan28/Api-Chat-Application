@@ -14,5 +14,6 @@ namespace Application_Chat.Service
         Task<string> UpdateVisibilityOfGroup(VisibilityType visGroupNew, string idGroup);
         Task<bool> DeleteGroup(string idGroup);
         Task<Group> GetGroupById(string idGroup);
+        Task<List<Group>> GetAllPublicGroups();
     }
 }

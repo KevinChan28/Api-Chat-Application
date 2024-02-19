@@ -131,5 +131,13 @@ namespace Application_Chat.Service.Imp
 
             return null;
         }
+
+        public async Task<List<Group>> GetAllPublicGroups()
+        {
+			List<Group> Groups = await _groupRepository.GetAllGroups();
+            List<Group> PublicGroups = Groups.Where(z => z.Visibility == (Enums.VisibilityType)0).ToList();
+
+			return PublicGroups; 
+        }
     }
 }
