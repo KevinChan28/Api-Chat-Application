@@ -268,5 +268,30 @@ namespace Application_Chat.Controllers
             }
             return Ok(response);
         }
+
+        /// <summary>
+        /// Obtener todos los grupos publicos
+        /// </summary>
+        /// <returns>Lista de grupos publicos</returns>
+        /// <response code="200"> Exito </response>
+        /// <response code="500">Ha ocurrido un error en la consulta.</response>
+        [HttpGet("PublicGroups")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> GetAllPublicGroups()
+        {
+            ResponseBase response = new ResponseBase();
+            try
+            {
+                List<Group> publicGroups = await _group.GetAllPublicGroups();
+                response.Data = publicGroups;
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return Ok(response);
+        }
     }
 }
