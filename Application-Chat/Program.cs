@@ -1,4 +1,5 @@
 using Application_Chat.Context;
+using Application_Chat.Hubs;
 using Application_Chat.Repository;
 using Application_Chat.Repository.Imp;
 using Application_Chat.Security;
@@ -64,9 +65,33 @@ builder.Services.AddSingleton(sp =>
 
 //Configuration of server
 builder.Services.AddJwtServices(builder.Configuration);
+//Add SignalR to send messages
+builder.Services.AddSignalR();
 
-builder.Services.AddScoped<IUserRepository, ImpUserRepository>();
-builder.Services.AddScoped<IUser, ImpUser>();
+builder.Services.AddTransient<IUserRepository, ImpUserRepository>();
+builder.Services.AddTransient<IUser, ImpUser>();
+builder.Services.AddTransient<IAuthorization, ImpAuthorization>();
+builder.Services.AddTransient<IMessageRepository, ImpMessageRepository>();
+builder.Services.AddTransient<IMessage, ImpMessage>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<IGroupRepository, ImpGroupRepository>();
+builder.Services.AddTransient<IGroup, ImpGroup>();
+builder.Services.AddTransient<ChatHub>();
+builder.Services.AddTransient<IIssueRepository, ImpIssueRepository>();
+builder.Services.AddTransient<IIsue, ImpIssue>();
+
+
+//CORS
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy(name: "Cors", builder =>
+	{
+		builder.WithOrigins("http://localhost:4200", "http://187.155.91.226:8080", "https://deploy-preview-1--uachat.netlify.app");
+		builder.AllowCredentials();
+		builder.AllowAnyMethod();
+		builder.AllowAnyHeader();
+	});
+});
 
 var app = builder.Build();
 
@@ -77,9 +102,15 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
+app.UseCors("Cors");
+
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+
 app.UseAuthorization();
+
+app.MapHub<ChatHub>("/chat");
 
 app.MapControllers();
 

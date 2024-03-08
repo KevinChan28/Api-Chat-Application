@@ -8,38 +8,42 @@ using System.Net;
 
 namespace Application_Chat.Controllers
 {
+	[Authorize]
 	[EnableCors("Cors")]
 	[Route("api/[controller]")]
 	[ApiController]
-	public class UsersController : ControllerBase
+	public class MessagesController : ControllerBase
 	{
-		private readonly IUser _user;
+		private readonly IMessage _message;
 
-		public UsersController(IUser user)
+		public MessagesController(IMessage message)
 		{
-			_user = user;
+			_message = message;
 		}
 
+
 		/// <summary>
-		/// Registrar un usuario
+		/// Registrar un mensaje
 		/// </summary>
-		/// <returns>Id del usuario nuevo</returns>
+		/// <returns>Id del message</returns>
 		/// <response code="200"> Exito </response>
 		/// <response code="500">Ha ocurrido un error en la creación.</response>
 		[HttpPost]
 		[ProducesResponseType((int)HttpStatusCode.OK)]
 		[ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-		public async Task<IActionResult> RegisterUser([FromBody] CreateUser userNew)
+		public async Task<IActionResult> RegisterUser([FromBody] CreateMessage message)
 		{
 			ResponseBase response = new ResponseBase();
+
 			try
 			{
-				string IdUser = await _user.Create(userNew);
-				if (IdUser != null)
+				string idMessage = await _message.CreateMessage(message);
+
+				if (idMessage != null)
 				{
 					response.Success = true;
-					response.Message = "user register";
-					response.Data = new { IdUser = IdUser };
+					response.Message = "message register";
+					response.Data = new { IdUser = idMessage };
 				}
 				else
 				{
@@ -54,9 +58,9 @@ namespace Application_Chat.Controllers
 		}
 
 		/// <summary>
-		/// Obtener todos los usuarios
+		/// Obtener todos los mensajes
 		/// </summary>
-		/// <returns>Lista de usuarios</returns>
+		/// <returns>Lista de mensajes</returns>
 		/// <response code="200"> Exito </response>
 		/// <response code="500">Ha ocurrido un error en la consulta.</response>
 		[HttpGet]
@@ -67,8 +71,9 @@ namespace Application_Chat.Controllers
 			ResponseBase response = new ResponseBase();
 			try
 			{
-				List<User> users = await _user.GetAllUsers();
-				response.Data = users;
+				List<Message> messages = await _message.GetAllMessages();
+				response.Message = "Search success";
+				response.Data = messages;
 				response.Success = true;
 			}
 			catch (Exception ex)
@@ -79,101 +84,95 @@ namespace Application_Chat.Controllers
 		}
 
 		/// <summary>
-		/// Eliminar un usuario
+		/// Cambiar el contenido de un mensaje
+		/// </summary>
+		/// <returns>Id del mensaje actualizado</returns>
+		/// <response code="200"> Exito </response>
+		/// <response code="500">Ha ocurrido un error en la consulta.</response>
+		[HttpPatch("content")]
+		[ProducesResponseType((int)HttpStatusCode.OK)]
+		[ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+		[ProducesResponseType((int)HttpStatusCode.BadRequest)]
+		public async Task<IActionResult> ChangeContentMessage([FromBody] string text, string idMessage)
+		{
+			ResponseBase response = new ResponseBase();
+			try
+			{
+				string message = await _message.ChangeContentMessage(text, idMessage);
+
+				if (message != null)
+				{
+					response.Message = "Updated successfully";
+					response.Data = message;
+					response.Success = true;
+				}
+				else
+				{
+					return BadRequest("Message not found");
+				}
+
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError);
+			}
+			return Ok(response);
+		}
+
+		/// <summary>
+		/// Eliminar un mensaje
 		/// </summary>
 		/// <returns></returns>
 		/// <response code="200"> Exito </response>
-		/// <response code="500">Ha ocurrido un error en la acción.</response>
-		[HttpDelete("{idUser}")]
+		/// <response code="500">Ha ocurrido un error en la consulta.</response>
+		[HttpDelete("{idMessage}")]
 		[ProducesResponseType((int)HttpStatusCode.OK)]
 		[ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-		public async Task<IActionResult> DeleteUser([FromRoute] string idUser)
+		[ProducesResponseType((int)HttpStatusCode.BadRequest)]
+		public async Task<IActionResult> DeleteMessage([FromRoute] string idMessage)
 		{
 			ResponseBase response = new ResponseBase();
 			try
 			{
-				bool success = await _user.Delete(idUser);
-				if (!success)
+				bool success = await _message.DeleteMessage(idMessage);
+
+				if (success != false)
 				{
-					return NotFound();
+					response.Message = "Delete successfully";
+					response.Data = success;
+					response.Success = true;
 				}
+				else
+				{
+					return BadRequest("Message not found");
+				}
+
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError);
+			}
+			return Ok(response);
+		}
+
+		/// <summary>
+		/// Obtener todos los mensajes de un grupo 
+		/// </summary>
+		/// <returns>Lista de mensajes</returns>
+		/// <response code="200"> Exito </response>
+		/// <response code="500">Ha ocurrido un error en la consulta.</response>
+		[HttpGet("group/{idGroup}")]
+		[ProducesResponseType((int)HttpStatusCode.OK)]
+		[ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> GetMessageOfGroup([FromRoute] string idGroup)
+		{
+			ResponseBase response = new ResponseBase();
+			try
+			{
+				List<ListMessagesInfo> messages = await _message.GetMessagesOfGroup(idGroup);
+				response.Message = "Search success";
+				response.Data = messages;
 				response.Success = true;
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(StatusCodes.Status500InternalServerError);
-			}
-			return Ok(response);
-		}
-
-
-		/// <summary>
-		/// Cambiar el UserName de un usuario
-		/// </summary>
-		/// <returns>id del usuario que se actualizó</returns>
-		/// <response code="200"> Exito </response>
-		/// <response code="500">Ha ocurrido un error en la acción.</response>
-		[HttpPatch]
-		[ProducesResponseType((int)HttpStatusCode.OK)]
-		[ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-		public async Task<IActionResult> ChangeNameUser([FromBody] ChangeUserName model)
-		{
-			ResponseBase response = new ResponseBase();
-			try
-			{
-				if (model.IdUser == null | model.UserName == null)
-				{
-					return BadRequest();
-				}
-
-				string idUserUpdated = await _user.UpdateNameOfUser(model.UserName, model.IdUser);
-				if (idUserUpdated != null)
-				{
-					response.Success = true;
-					response.Data = idUserUpdated;
-					response.Message = "Name user changed";
-				}
-				else
-				{
-					return NotFound();
-				}
-
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(StatusCodes.Status500InternalServerError);
-			}
-			return Ok(response);
-		}
-
-
-		/// <summary>
-		/// Validar credenciales del login
-		/// </summary>
-		/// <returns>Token</returns>
-		/// <response code="200"> Exito </response>
-		/// <response code="500">Ha ocurrido un error en la creación.</response>
-		[HttpPost("Login")]
-		[ProducesResponseType((int)HttpStatusCode.OK)]
-		[ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-		public async Task<IActionResult> ValidateCredentials([FromBody] Login login)
-		{
-			ResponseBase response = new ResponseBase();
-			try
-			{
-				string token = await _user.ValidateCredentials(login);
-
-				if (token != null)
-				{
-					response.Success = true;
-					response.Message = "Credentials validated";
-					response.Data = token;
-				}
-				else
-				{
-					response.Success = false;
-					response.Message = "Credentials incorrect";
-				}
 			}
 			catch (Exception ex)
 			{
